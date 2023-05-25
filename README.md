@@ -1,8 +1,167 @@
-# travel-buddy-finder
+# Travel Buddy Finder
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This project implements web services to create a distributed service-oriented system called Travel Buddy Finder 
+for advertising and searching for travel opportunities.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+## API
+
+<table>
+<tr>
+<td>
+
+**Method**
+</td> 
+<td> 
+
+**URN**
+</td> 
+<td> 
+
+**Request Body**
+</td> 
+<td>
+
+**Output**
+</td> 
+<td>
+
+**Description**
+</td>
+</tr>
+
+<tr>
+<td>POST</td><td>/users</td>
+<td>
+
+```json
+{
+  "username": "admin",
+  "password": "admin",
+  "isAdmin": true
+}
+```
+</td>
+<td>
+
+```json
+{
+  "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+  "username": "admin",
+  "isAdmin": true
+}
+```
+</td>
+<td>Create a user <br /> Note: Only an admin user can create another admin user</td>
+</tr>
+
+<tr>
+<td>DELETE</td><td>/users/:id</td><td>-</td><td>-</td>
+<td>Delete a user <br /> Note: Only an administrator user is authorized</td>
+</tr>
+
+<tr>
+<td>POST</td><td>/login</td>
+<td>
+
+```json
+{
+  "username": "admin",
+  "password": "admin"
+}
+```
+</td>
+<td>
+
+```json
+{
+  "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+  "username": "admin",
+  "isAdmin": true
+}
+```
+</td>
+<td>Login</td>
+</tr>
+
+<tr>
+<td>POST</td><td>/trips</td>
+<td>
+
+```json
+{
+  "location": "Paris",
+  "startDate": "2023-04-29",
+  "durationInDays": "4"
+}
+```
+</td>
+<td>
+
+```json
+{
+  "id": "e58ed763-928c-4155-bee9-fdbaaadc15f3",
+  "location": "Paris",
+  "startDate": "2023-04-29",
+  "durationInDays": "4"
+}
+```
+</td>
+<td>Share a trip</td>
+</tr>
+
+<tr>
+<td>GET</td><td>/trips?available&sharedBy={username}</td><td>-</td>
+<td>
+
+```json
+[
+  {
+    "id": "e58ed763-928c-4155-bee9-fdbaaadc15f3",
+    "location": "Paris",
+    "startDate": "2023-04-29",
+    "durationInDays": "4",
+    "weather": [
+      {
+        "day": "2023-04-29",
+        "sate": "sunny",
+        "temperatureMax": "31",
+        "temperatureMin": "19"
+      }
+    ],
+    "sharedBy": {
+      "username": "admin"
+    }
+  }
+]
+```
+</td>
+<td>Get trips according to query params</td>
+</tr>
+
+<tr>
+<td>POST</td><td>/trips/:id/interest</td><td>-</td><td>-</td>
+<td>Add interest to a shared trip</td>
+</tr>
+
+<tr>
+<td>GET</td><td>/trips/:id/interestedUsers</td><td>-</td>
+<td>
+
+```json
+[
+  {
+    "username": "admin"
+  }
+]
+```
+</td>
+<td>Get all interested users</td>
+</tr>
+</table>
+
+## Licence
+
+Code released under Apache License 2.0
 
 ## Running the application in dev mode
 
@@ -30,31 +189,3 @@ If you want to build an _über-jar_, execute the following command:
 ```
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/travel-buddy-finder-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- RESTEasy Reactive ([guide](https://quarkus.io/guides/resteasy-reactive)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-
-## Provided Code
-
-### RESTEasy Reactive
-
-Easily start your Reactive RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
