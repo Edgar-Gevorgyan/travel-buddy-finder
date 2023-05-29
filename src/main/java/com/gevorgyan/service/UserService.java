@@ -5,15 +5,21 @@ import com.gevorgyan.model.UserRequestModel;
 import com.gevorgyan.model.UserResponseModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.modelmapper.ModelMapper;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @ApplicationScoped
 public class UserService {
 
-    private final ModelMapper modelMapper = new ModelMapper();
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    private final UUIDGeneratorService uuidGeneratorService;
+
+    public UserService(@RestClient UUIDGeneratorService uuidGeneratorService) {
+        this.uuidGeneratorService = uuidGeneratorService;
+    }
 
     @Transactional
     public UserResponseModel addUser(UserRequestModel userRequestModel) {
@@ -21,9 +27,9 @@ public class UserService {
             throw new IllegalArgumentException("Username already exists");
         }
 
-        UUID userUUID = UUID.randomUUID();
+        String userUUID = uuidGeneratorService.generateUUIDs(1)[0];
         UserEntity userEntity = modelMapper.map(userRequestModel, UserEntity.class);
-        userEntity.setId(userUUID.toString());
+        userEntity.setId(userUUID);
         UserEntity.persist(userEntity);
         return modelMapper.map(userEntity, UserResponseModel.class);
     }

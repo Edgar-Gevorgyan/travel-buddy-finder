@@ -6,16 +6,23 @@ import com.gevorgyan.model.TripRequestModel;
 import com.gevorgyan.model.TripResponseModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 @ApplicationScoped
 public class TripService {
 
     private static final ModelMapper modelMapper = new ModelMapper();
+
+    private final UUIDGeneratorService uuidGeneratorService;
+
+    public TripService(@RestClient UUIDGeneratorService uuidGeneratorService) {
+        this.uuidGeneratorService = uuidGeneratorService;
+    }
 
     @Transactional
     public TripResponseModel addTrip(TripRequestModel tripRequestModel, String userId) {
@@ -24,10 +31,11 @@ public class TripService {
             throw new IllegalArgumentException("User not exists");
         }
 
-        UUID userUUID = UUID.randomUUID();
+        String userUUID = uuidGeneratorService.generateUUIDs(1)[0];
         TripEntity tripEntity = modelMapper.map(tripRequestModel, TripEntity.class);
-        tripEntity.setId(userUUID.toString());
+        tripEntity.setId(userUUID);
         tripEntity.setSharedBy(user);
+        tripEntity.setInterestedUsers(Set.of());
         TripEntity.persist(tripEntity);
         return modelMapper.map(tripEntity, TripResponseModel.class);
     }
