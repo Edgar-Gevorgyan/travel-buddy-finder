@@ -102,7 +102,11 @@ for advertising and searching for travel opportunities.
   "id": "e58ed763-928c-4155-bee9-fdbaaadc15f3",
   "location": "Paris",
   "startDate": "2023-04-29",
-  "durationInDays": "4"
+  "durationInDays": "4",
+  "sharedBy": {
+    "username": "admin"
+  },
+  "interestedUsers": []
 }
 ```
 </td>
@@ -110,7 +114,7 @@ for advertising and searching for travel opportunities.
 </tr>
 
 <tr>
-<td>GET</td><td>/trips?available&sharedBy={username}</td><td>-</td>
+<td>GET</td><td>/trips?available={true|false}&sharedBy={username}</td><td>-</td>
 <td>
 
 ```json
@@ -130,7 +134,12 @@ for advertising and searching for travel opportunities.
     ],
     "sharedBy": {
       "username": "admin"
-    }
+    },
+    "interestedUsers": [
+      {
+        "username": "admin"
+      }
+    ]
   }
 ]
 ```
@@ -139,23 +148,40 @@ for advertising and searching for travel opportunities.
 </tr>
 
 <tr>
-<td>POST</td><td>/trips/:id/interest</td><td>-</td><td>-</td>
-<td>Add interest to a shared trip</td>
-</tr>
-
-<tr>
-<td>GET</td><td>/trips/:id/interestedUsers</td><td>-</td>
+<td>GET</td><td>/trips/:id</td><td>-</td>
 <td>
 
 ```json
-[
-  {
+{
+  "id": "e58ed763-928c-4155-bee9-fdbaaadc15f3",
+  "location": "Paris",
+  "startDate": "2023-04-29",
+  "durationInDays": "4",
+  "weather": [
+    {
+      "day": "2023-04-29",
+      "sate": "sunny",
+      "temperatureMax": "31",
+      "temperatureMin": "19"
+    }
+  ],
+  "sharedBy": {
     "username": "admin"
-  }
-]
+  },
+  "interestedUsers": [
+    {
+      "username": "admin"
+    }
+  ]
+}
 ```
 </td>
-<td>Get all interested users</td>
+<td>Get a trip by id</td>
+</tr>
+
+<tr>
+<td>POST</td><td>/trips/:id/interestedUsers</td><td>-</td><td>-</td>
+<td>Add interest to a shared trip</td>
 </tr>
 </table>
 
