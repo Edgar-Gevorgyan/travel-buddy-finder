@@ -1,4 +1,4 @@
-# Travel Buddy Finder
+# Travel Buddy Finder Backend
 
 This project implements web services to create a distributed service-oriented system called Travel Buddy Finder 
 for advertising and searching for travel opportunities.
