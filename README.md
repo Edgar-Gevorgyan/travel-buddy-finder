@@ -3,6 +3,8 @@
 This project implements web services to create a distributed service-oriented system called Travel Buddy Finder 
 for advertising and searching for travel opportunities.
 
+![Overview of the SOA system component interactions.png](images%2FOverview%20of%20the%20SOA%20system%20component%20interactions.png)
+
 ## API
 
 <table>
