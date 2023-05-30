@@ -41,7 +41,7 @@ public class TripService {
             throw new IllegalArgumentException("User not exists");
         }
 
-        String userUUID = uuidGeneratorService.generateUUIDs(1)[0];
+        String userUUID = uuidGeneratorService.generateUUIDs(1).get(0);
         TripEntity tripEntity = modelMapper.map(tripRequestModel, TripEntity.class);
         tripEntity.setId(userUUID);
         tripEntity.setSharedBy(user);

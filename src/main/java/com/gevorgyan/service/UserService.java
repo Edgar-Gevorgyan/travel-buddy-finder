@@ -27,7 +27,7 @@ public class UserService {
             throw new IllegalArgumentException("Username already exists");
         }
 
-        String userUUID = uuidGeneratorService.generateUUIDs(1)[0];
+        String userUUID = uuidGeneratorService.generateUUIDs(1).get(0);
         UserEntity userEntity = modelMapper.map(userRequestModel, UserEntity.class);
         userEntity.setId(userUUID);
         UserEntity.persist(userEntity);
