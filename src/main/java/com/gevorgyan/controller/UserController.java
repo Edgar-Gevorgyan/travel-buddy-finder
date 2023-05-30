@@ -13,7 +13,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Path("/users")
 @Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(value = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class UserController {
 
     private final UserService userService;

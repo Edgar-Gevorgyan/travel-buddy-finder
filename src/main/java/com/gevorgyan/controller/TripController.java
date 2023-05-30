@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Path("/trips")
 @Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(value = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class TripController {
 
     private final TripService tripService;
