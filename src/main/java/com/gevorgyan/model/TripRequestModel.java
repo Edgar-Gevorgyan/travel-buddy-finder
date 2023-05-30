@@ -1,14 +1,12 @@
 package com.gevorgyan.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
 public class TripRequestModel {
     private String location;
     private Date startDate;

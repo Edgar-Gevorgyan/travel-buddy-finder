@@ -105,6 +105,16 @@ for advertising and searching for travel opportunities.
   "location": "Paris",
   "startDate": "2023-04-29",
   "durationInDays": "4",
+  "weather": [
+    {
+      "date": "2023-04-29",
+      "maxtempC": 22,
+      "mintempC": 11,
+      "avgtempC": 17,
+      "sunHour": 15.9,
+      "uvIndex": 5
+    }
+  ],
   "sharedBy": {
     "username": "admin"
   },
@@ -128,10 +138,12 @@ for advertising and searching for travel opportunities.
     "durationInDays": "4",
     "weather": [
       {
-        "day": "2023-04-29",
-        "sate": "sunny",
-        "temperatureMax": "31",
-        "temperatureMin": "19"
+        "date": "2023-04-29",
+        "maxtempC": 22,
+        "mintempC": 11,
+        "avgtempC": 17,
+        "sunHour": 15.9,
+        "uvIndex": 5
       }
     ],
     "sharedBy": {
@@ -161,10 +173,12 @@ for advertising and searching for travel opportunities.
   "durationInDays": "4",
   "weather": [
     {
-      "day": "2023-04-29",
-      "sate": "sunny",
-      "temperatureMax": "31",
-      "temperatureMin": "19"
+      "date": "2023-04-29",
+      "maxtempC": 22,
+      "mintempC": 11,
+      "avgtempC": 17,
+      "sunHour": 15.9,
+      "uvIndex": 5
     }
   ],
   "sharedBy": {
@@ -182,7 +196,36 @@ for advertising and searching for travel opportunities.
 </tr>
 
 <tr>
-<td>POST</td><td>/trips/:id/interestedUsers</td><td>-</td><td>-</td>
+<td>POST</td><td>/trips/:id/interestedUsers</td><td>-</td>
+<td>
+
+```json
+{
+  "id": "e58ed763-928c-4155-bee9-fdbaaadc15f3",
+  "location": "Paris",
+  "startDate": "2023-04-29",
+  "durationInDays": "4",
+  "weather": [
+    {
+      "date": "2023-04-29",
+      "maxtempC": 22,
+      "mintempC": 11,
+      "avgtempC": 17,
+      "sunHour": 15.9,
+      "uvIndex": 5
+    }
+  ],
+  "sharedBy": {
+    "username": "admin"
+  },
+  "interestedUsers": [
+    {
+      "username": "admin"
+    }
+  ]
+}
+```
+</td>
 <td>Add interest to a shared trip</td>
 </tr>
 </table>

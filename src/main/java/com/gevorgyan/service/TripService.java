@@ -4,14 +4,21 @@ import com.gevorgyan.entity.TripEntity;
 import com.gevorgyan.entity.UserEntity;
 import com.gevorgyan.model.TripRequestModel;
 import com.gevorgyan.model.TripResponseModel;
+import com.gevorgyan.model.WeatherResponseModel;
+import com.gevorgyan.model.WorldWeatherOnlineResponseModel;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class TripService {
@@ -19,9 +26,12 @@ public class TripService {
     private static final ModelMapper modelMapper = new ModelMapper();
 
     private final UUIDGeneratorService uuidGeneratorService;
+    private final WorldWeatherService worldWeatherService;
 
-    public TripService(@RestClient UUIDGeneratorService uuidGeneratorService) {
+    public TripService(@RestClient UUIDGeneratorService uuidGeneratorService,
+                       @RestClient WorldWeatherService worldWeatherService) {
         this.uuidGeneratorService = uuidGeneratorService;
+        this.worldWeatherService = worldWeatherService;
     }
 
     @Transactional
@@ -37,7 +47,11 @@ public class TripService {
         tripEntity.setSharedBy(user);
         tripEntity.setInterestedUsers(Set.of());
         TripEntity.persist(tripEntity);
-        return modelMapper.map(tripEntity, TripResponseModel.class);
+
+        TripResponseModel tripResponseModel =  modelMapper.map(tripEntity, TripResponseModel.class);
+        var weather = getWeather(tripResponseModel);
+        tripResponseModel.setWeather(weather);
+        return tripResponseModel;
     }
 
     public List<TripResponseModel> getTrips(Boolean available, String username) {
@@ -53,7 +67,14 @@ public class TripService {
         } else {
             trips = TripEntity.listAll();
         }
-        return modelMapper.map(trips, new TypeToken<List<TripResponseModel>>() {}.getType());
+
+        TripResponseModel[] tripResponseModels =  modelMapper.map(trips, new TypeToken<List<TripResponseModel>>() {}.getType());
+        return Arrays.stream(tripResponseModels)
+                .peek(tripResponseModel -> {
+                    var weather = getWeather(tripResponseModel);
+                    tripResponseModel.setWeather(weather);
+                })
+                .collect(Collectors.toList());
     }
 
     public TripResponseModel getTrip(String id) {
@@ -61,7 +82,11 @@ public class TripService {
         if (trip == null) {
             throw new IllegalArgumentException("Trip not found");
         }
-        return modelMapper.map(trip, TripResponseModel.class);
+
+        TripResponseModel tripResponseModel =  modelMapper.map(trip, TripResponseModel.class);
+        var weather = getWeather(tripResponseModel);
+        tripResponseModel.setWeather(weather);
+        return tripResponseModel;
     }
 
     @Transactional
@@ -73,6 +98,28 @@ public class TripService {
         }
         trip.getInterestedUsers().add(user);
         TripEntity.persist(trip);
-        return modelMapper.map(trip, TripResponseModel.class);
+
+        TripResponseModel tripResponseModel =  modelMapper.map(trip, TripResponseModel.class);
+        var weather = getWeather(tripResponseModel);
+        tripResponseModel.setWeather(weather);
+        return tripResponseModel;
+    }
+
+    private List<WeatherResponseModel> getWeather(TripResponseModel trip) {
+        LocalDate today = LocalDate.now();
+        LocalDate startDate = trip.getStartDate().toLocalDate();
+        if (today.isAfter(startDate)) {
+            return List.of();
+        }
+
+        long days = ChronoUnit.DAYS.between(today, startDate) + trip.getDurationInDays();
+        var worldWeatherOnlineResponseModel = worldWeatherService.getWeather(trip.getLocation(), days);
+        return Optional.ofNullable(worldWeatherOnlineResponseModel)
+                .map(WorldWeatherOnlineResponseModel::getData)
+                .map(WorldWeatherOnlineResponseModel.Data::getWeather)
+                .orElse(List.of())
+                .stream()
+                .filter(weatherResponseModel -> !weatherResponseModel.getDate().isBefore(startDate))
+                .collect(Collectors.toList());
     }
 }

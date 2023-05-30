@@ -1,12 +1,10 @@
 package com.gevorgyan.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
 public class UserRequestModel {
     private String username;
     private String password;

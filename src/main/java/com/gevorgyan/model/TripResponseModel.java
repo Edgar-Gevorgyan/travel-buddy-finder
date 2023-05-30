@@ -1,22 +1,17 @@
 package com.gevorgyan.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Getter
 @Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
 public class TripResponseModel {
     @Getter
     @Setter
-    @EqualsAndHashCode
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserResponseModel {
+    static class UserResponseModel {
         private String username;
     }
 
@@ -24,6 +19,7 @@ public class TripResponseModel {
     private String location;
     private Date startDate;
     private Integer durationInDays;
+    private List<WeatherResponseModel> weather;
     private UserResponseModel sharedBy;
     private List<UserResponseModel> interestedUsers;
 }
