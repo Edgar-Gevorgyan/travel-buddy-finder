@@ -68,8 +68,8 @@ public class TripService {
             trips = TripEntity.listAll();
         }
 
-        TripResponseModel[] tripResponseModels =  modelMapper.map(trips, new TypeToken<List<TripResponseModel>>() {}.getType());
-        return Arrays.stream(tripResponseModels)
+        List<TripResponseModel> tripResponseModels =  modelMapper.map(trips, new TypeToken<List<TripResponseModel>>() {}.getType());
+        return tripResponseModels.stream()
                 .peek(tripResponseModel -> {
                     var weather = getWeather(tripResponseModel);
                     tripResponseModel.setWeather(weather);
