@@ -108,11 +108,12 @@ public class TripService {
     private List<WeatherResponseModel> getWeather(TripResponseModel trip) {
         LocalDate today = LocalDate.now();
         LocalDate startDate = trip.getStartDate().toLocalDate();
-        if (today.isAfter(startDate)) {
+        LocalDate endDate = startDate.plusDays(trip.getDurationInDays());
+        if (endDate.isBefore(today) || startDate.isAfter(today.plusDays(14))) {
             return List.of();
         }
 
-        long days = ChronoUnit.DAYS.between(today, startDate) + trip.getDurationInDays();
+        long days = ChronoUnit.DAYS.between(today, endDate);
         var worldWeatherOnlineResponseModel = worldWeatherService.getWeather(trip.getLocation(), days);
         return Optional.ofNullable(worldWeatherOnlineResponseModel)
                 .map(WorldWeatherOnlineResponseModel::getData)
