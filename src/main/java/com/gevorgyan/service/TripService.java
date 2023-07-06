@@ -14,7 +14,6 @@ import org.modelmapper.TypeToken;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -56,6 +55,9 @@ public class TripService {
 
     public List<TripResponseModel> getTrips(Boolean available, String username) {
         UserEntity user = UserEntity.findByUsername(username);
+        if (username != null && username.length() > 0 && user == null) {
+            return List.of();
+        }
 
         final List<TripEntity> trips;
         if (Boolean.TRUE.equals(available) && user != null) {
@@ -114,13 +116,17 @@ public class TripService {
         }
 
         long days = ChronoUnit.DAYS.between(today, endDate);
-        var worldWeatherOnlineResponseModel = worldWeatherService.getWeather(trip.getLocation(), days);
-        return Optional.ofNullable(worldWeatherOnlineResponseModel)
-                .map(WorldWeatherOnlineResponseModel::getData)
-                .map(WorldWeatherOnlineResponseModel.Data::getWeather)
-                .orElse(List.of())
-                .stream()
-                .filter(weatherResponseModel -> !weatherResponseModel.getDate().isBefore(startDate))
-                .collect(Collectors.toList());
+        try {
+            var worldWeatherOnlineResponseModel = worldWeatherService.getWeather(trip.getLocation(), days);
+            return Optional.ofNullable(worldWeatherOnlineResponseModel)
+                    .map(WorldWeatherOnlineResponseModel::getData)
+                    .map(WorldWeatherOnlineResponseModel.Data::getWeather)
+                    .orElse(List.of())
+                    .stream()
+                    .filter(weatherResponseModel -> !weatherResponseModel.getDate().isBefore(startDate))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            return List.of();
+        }
     }
 }
